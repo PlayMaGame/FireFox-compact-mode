@@ -2,7 +2,7 @@
 
 A minimal, compact Firefox setup that merges the tab bar and nav bar into a single row, with inline URL editing on tabs.
 
-![demo](screenshots/demo.png)
+![demo](screenshots/)
 
 ## Features
 
