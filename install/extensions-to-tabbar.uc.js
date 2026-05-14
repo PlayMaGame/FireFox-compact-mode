@@ -1,27 +1,59 @@
 // ==UserScript==
 // @name           tabbar-layout
-// @description    App menu + back on left; extensions + window controls on right
+// @description    App menu + back/reload on left; downloads + extensions + window controls on right
 // ==/UserScript==
 
 (function() {
+    const SEPARATOR_ID = "tabbar-layout-separator";
+
+    function ensureSeparator() {
+        let sep = document.getElementById(SEPARATOR_ID);
+        if (!sep) {
+            sep = document.createXULElement("toolbarseparator");
+            sep.id = SEPARATOR_ID;
+        }
+        return sep;
+    }
+
     function moveAll() {
         const tabsToolbar = document.getElementById("TabsToolbar");
         const navbar = document.getElementById("nav-bar");
         if (!tabsToolbar || !navbar) return;
 
-        // --- Right side: extension buttons before window controls ---
         const rightAnchor = tabsToolbar.querySelector(".titlebar-buttonbox-container");
-        const extNodes = [
-            ...navbar.querySelectorAll('[id$="-browser-action"]'),
-            document.getElementById("unified-extensions-button")
-        ].filter(Boolean);
-        extNodes.forEach(node => {
+
+        // --- Right side (in order, right-to-left before window controls): 
+        //     extensions → unified-extensions-button → separator → downloads ---
+        const downloads = document.getElementById("downloads-button");
+        const unifiedExt = document.getElementById("unified-extensions-button");
+        const extActions = [...navbar.querySelectorAll('[id$="-browser-action"]')];
+
+        // Insert downloads first (leftmost of the right group)
+        if (downloads && downloads.parentNode !== tabsToolbar) {
+            tabsToolbar.insertBefore(downloads, rightAnchor);
+        }
+
+        // Separator between downloads and extensions
+        if (downloads) {
+            const sep = ensureSeparator();
+            if (sep.parentNode !== tabsToolbar || sep.previousSibling !== downloads) {
+                tabsToolbar.insertBefore(sep, rightAnchor);
+            }
+        }
+
+        // Then extension action buttons
+        extActions.forEach(node => {
             if (node.parentNode !== tabsToolbar) {
                 tabsToolbar.insertBefore(node, rightAnchor);
             }
         });
 
-        // --- Left side: hamburger, then back button ---
+        // Then the unified extensions button (rightmost before window controls)
+        if (unifiedExt && unifiedExt.parentNode !== tabsToolbar) {
+            tabsToolbar.insertBefore(unifiedExt, rightAnchor);
+        }
+
+        // --- Left side: hamburger → back → reload ---
         const appMenu = document.getElementById("PanelUI-menu-button");
         if (appMenu && appMenu.parentNode !== tabsToolbar) {
             tabsToolbar.insertBefore(appMenu, tabsToolbar.firstChild);
@@ -35,6 +67,14 @@
                 tabsToolbar.insertBefore(backBtn, tabsToolbar.firstChild);
             }
         }
+
+        // Reload button: Firefox wraps it as #stop-reload-button containing #reload-button.
+        // Prefer the wrapper if present, else the bare reload button.
+        const reloadBtn = document.getElementById("stop-reload-button")
+                       || document.getElementById("reload-button");
+        if (reloadBtn && backBtn) {
+            backBtn.after(reloadBtn);
+        }
     }
 
     function init() {
@@ -46,7 +86,11 @@
                     for (const n of m.addedNodes) {
                         if (n?.id && (
                             n.id.endsWith("-browser-action") ||
-                            n.id === "unified-extensions-button"
+                            n.id === "unified-extensions-button" ||
+                            n.id === "downloads-button" ||
+                            n.id === "reload-button" ||
+                            n.id === "stop-reload-button" ||
+                            n.id === "back-button"
                         )) {
                             setTimeout(moveAll, 50);
                             return;
