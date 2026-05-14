@@ -155,31 +155,41 @@
             }
         }
 
-        input.addEventListener("input", updateSuggestions);
-        input.addEventListener("keydown", e => {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                if (selectedIndex >= 0 && suggestions[selectedIndex]) {
-                    navigate(suggestions[selectedIndex].url);
-                } else {
-                    navigate(input.value);
-                }
-            } else if (e.key === "Escape") {
-                e.preventDefault(); close();
-            } else if (e.key === "ArrowDown" && suggestions.length) {
-                e.preventDefault();
-                selectedIndex = (selectedIndex + 1) % suggestions.length;
-                render();
-            } else if (e.key === "ArrowUp" && suggestions.length) {
-                e.preventDefault();
-                selectedIndex = selectedIndex <= 0 ? suggestions.length - 1 : selectedIndex - 1;
-                render();
-            } else if (e.key === "Tab" && suggestions.length) {
-                e.preventDefault();
-                if (selectedIndex < 0) selectedIndex = 0;
-                input.value = suggestions[selectedIndex].url;
-            }
-        });
+		// Typing -> fetch suggestions
+		input.addEventListener("input", updateSuggestions);
+
+		// Stop keyboard events from reaching the tab bar
+		const stopKey = e => e.stopPropagation();
+		input.addEventListener("keypress", stopKey);
+		input.addEventListener("keyup", stopKey);
+
+		input.addEventListener("keydown", e => {
+			e.stopPropagation();
+
+			if (e.key === "Enter") {
+				e.preventDefault();
+				if (selectedIndex >= 0 && suggestions[selectedIndex]) {
+					navigate(suggestions[selectedIndex].url);
+				} else {
+					navigate(input.value);
+				}
+			} else if (e.key === "Escape") {
+				e.preventDefault();
+				close();
+			} else if (e.key === "ArrowDown" && suggestions.length) {
+				e.preventDefault();
+				selectedIndex = (selectedIndex + 1) % suggestions.length;
+				render();
+			} else if (e.key === "ArrowUp" && suggestions.length) {
+				e.preventDefault();
+				selectedIndex = selectedIndex <= 0 ? suggestions.length - 1 : selectedIndex - 1;
+				render();
+			} else if (e.key === "Tab" && suggestions.length) {
+				e.preventDefault();
+				if (selectedIndex < 0) selectedIndex = 0;
+				input.value = suggestions[selectedIndex].url;
+			}
+		});
 
         input.addEventListener("blur", e => {
             if (panel.contains(e.relatedTarget)) return;
