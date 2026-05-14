@@ -1,0 +1,135 @@
+/* Hide URL bar + bookmarks bar when a real page is loaded.
+   They remain visible on new tab / home / blank tabs. */
+#navigator-toolbox:has(#urlbar[pageproxystate="valid"]) #nav-bar,
+#navigator-toolbox:has(#urlbar[pageproxystate="valid"]) #PersonalToolbar {
+    visibility: collapse;
+}
+
+/* Bring them back when you hover near the top or focus the toolbar
+   (e.g. Ctrl+L to focus the URL bar) */
+#navigator-toolbox:hover #nav-bar,
+#navigator-toolbox:hover #PersonalToolbar,
+#navigator-toolbox:focus-within #nav-bar,
+#navigator-toolbox:focus-within #PersonalToolbar {
+    visibility: visible;
+}
+
+/* Make a tab wider while its URL is being edited */
+.tabbrowser-tab[data-editing-url="true"] {
+    max-width: 500px !important;
+    min-width: 300px !important;
+    flex: 0 0 auto !important;
+}
+
+/* Give the input room to breathe */
+.tabbrowser-tab[data-editing-url="true"] .tab-content {
+    overflow: visible !important;
+}
+
+.tab-url-editor {
+    /* Already styled inline, but you can override here */
+    font-size: 12px !important;
+}
+
+/* Keep window control buttons (min/max/close) at the far right */
+#TabsToolbar .titlebar-buttonbox-container {
+    order: 1000 !important;
+}
+
+/* Let the tab strip shrink when extension buttons are present */
+#tabbrowser-tabs {
+    min-width: 100px !important;
+}
+
+/* Tighten spacing of extension buttons in the tab bar (optional) */
+#TabsToolbar .unified-extensions-item,
+#TabsToolbar toolbarbutton[id$="-browser-action"] {
+    padding: 0 2px !important;
+}
+
+/* Hide the URL / nav-bar entirely */
+#nav-bar {
+    visibility: collapse !important;
+}
+
+/* Also hide the thin separator line under it */
+#navigator-toolbox::after {
+    display: none !important;
+}
+
+/* Make the hamburger button look right in the tab bar */
+#TabsToolbar #PanelUI-menu-button {
+    padding: 0 4px !important;
+}
+
+/* Ensure left drag-space doesn't push tabs too far */
+#TabsToolbar > .titlebar-spacer[type="pre-tabs"] {
+    width: 6px !important;
+}
+
+/* ---- Tab URL editor ---- */
+.tab-url-editor {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    padding: 0 4px;
+}
+
+.tab-url-editor-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    color: inherit;
+    border: none;
+    outline: none;
+    font: inherit;
+    padding: 0;
+}
+
+.tab-url-editor-input::placeholder {
+    color: color-mix(in srgb, currentColor 45%, transparent);
+    font-style: italic;
+}
+
+/* Hide the tab close (X) button while editing */
+.tabbrowser-tab.tab-editing-url .tab-close-button {
+    display: none !important;
+}
+
+/* ---- Autocomplete dropdown ---- */
+.tab-url-editor-panel {
+    position: fixed;
+    z-index: 10000;
+    background: var(--arrowpanel-background, #2b2a33);
+    color: var(--arrowpanel-color, #fbfbfe);
+    border: 1px solid var(--arrowpanel-border-color, #52525e);
+    border-radius: 6px;
+    padding: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    font: message-box;
+}
+
+.tab-url-editor-item {
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.tab-url-editor-item:hover,
+.tab-url-editor-item.selected {
+    background-color: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.tab-url-editor-item-title {
+    font-weight: 500;
+    margin: 0;
+}
+
+.tab-url-editor-item-url {
+    font-size: 0.85em;
+    opacity: 0.65;
+    margin: 0;
+}
