@@ -2,7 +2,19 @@
 
 A minimal, compact Firefox setup that merges the tab bar and nav bar into a single row, with inline URL editing on tabs.
 
-![demo](screenshots/)
+## Demo Screenshots
+
+### Startup View
+![Startup](screenshots/startup.jpg)
+
+### New Tab Behavior
+![New Tab](screenshots/newtab.jpg)
+
+### Tab Search
+![Tab Search](screenshots/tabsearch.jpg)
+
+### Bookmarks Hidden on Load
+![Bookmarks Hidden](screenshots/bookmarks_hide_on_load.jpg)
 
 ## Features
 
