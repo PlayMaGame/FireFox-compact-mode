@@ -8,6 +8,9 @@
         "resource://gre/modules/PlacesUtils.sys.mjs"
     );
     const BLANK_URLS = new Set(["about:newtab", "about:home", "about:blank", ""]);
+    // Keeps the text typed into the inline editor per-tab, so it survives
+    // switching tabs and can be shown on the tab label instead of "New Tab".
+    const pendingLabels = new WeakMap();
 
     async function getSuggestions(query, limit = 10) {
         if (!query) return [];
@@ -51,7 +54,7 @@
         const input = document.createElement("input");
         input.type = "text";
         input.className = "tab-url-editor-input";
-        input.value = isBlank ? "" : url;
+        input.value = isBlank ? (pendingLabels.get(tab) || "") : url;
         input.placeholder = "input URL here";
         wrap.append(input);
 
@@ -116,6 +119,9 @@
         const onWindowBlur = () => close();
         const onReposition = () => { if (panel.style.display !== "none") positionPanel(); };
         const onDocMouseDown = (e) => {
+            // Ignore clicks inside an open context menu so its commands
+            // (Copy, Paste, Select All) can run without closing the editor first.
+            if (e.target.closest && e.target.closest("menupopup")) return;
             // Click outside both the editor wrap and the panel -> close
             if (!wrap.contains(e.target) && !panel.contains(e.target)) close();
         };
@@ -123,6 +129,16 @@
         function close() {
             if (closing) return;
             closing = true;
+
+            // Keep the typed text on blank tabs: store it and show it on the
+            // tab label instead of "New Tab", so it survives switching tabs.
+            const typed = input.value.trim();
+            const tabUrl = browser?.currentURI?.spec || "";
+            if (typed && BLANK_URLS.has(tabUrl)) {
+                pendingLabels.set(tab, typed);
+                try { tab.label = typed; } catch (_) {}
+            }
+
             try { if (wrap.isConnected) wrap.remove(); } catch (_) {}
             try { if (panel.isConnected) panel.remove(); } catch (_) {}
             try { tab.classList.remove("tab-editing-url"); } catch (_) {}
@@ -139,7 +155,10 @@
             target = (target || "").trim();
             if (!target) { close(); return; }
             let final;
-            if (/^[a-z][a-z0-9+\-.]*:/i.test(target)) {
+            // Security: only allow safe URL schemes when navigating. Anything
+            // else (javascript:, file:, chrome:, data:, ...) is treated as a
+            // search / https URL instead, never executed with chrome privileges.
+            if (/^(https?|ftp|about|mailto):/i.test(target)) {
                 final = target;
             } else if (/^[^\s]+\.[^\s]+$/.test(target)) {
                 final = "https://" + target;
@@ -193,6 +212,8 @@
 
         input.addEventListener("blur", e => {
             if (panel.contains(e.relatedTarget)) return;
+            // Keep the editor open while a context menu is active
+            if (document.querySelector("menupopup[open]")) return;
             setTimeout(close, 120);
         });
         wrap.addEventListener("mousedown", e => e.stopPropagation());

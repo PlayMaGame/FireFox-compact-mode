@@ -1,0 +1,19 @@
+/* ==UserScript==
+// @name           tab-fill
+// @description    Make tabs fill the entire tab bar and split the available width equally
+// ==/UserScript==*/
+
+/* Each unpinned horizontal tab takes an equal share of the tab bar and can
+   grow to fill it (Firefox normally caps tabs at 225px, leaving empty space).
+   With one tab it fills the bar; more tabs shrink them all equally, down to
+   the browser's 76px minimum, after which the bar scrolls. */
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab:not([pinned]) {
+  flex: 1 1 0% !important;
+  max-width: none !important;
+}
+
+/* Tabs reflow immediately when one is closed (disable Firefox's tab-width
+   lock that otherwise holds the gap until the mouse moves away). */
+#tabbrowser-tabs .closing-tabs-spacer {
+  width: 0 !important;
+}

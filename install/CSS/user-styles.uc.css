@@ -1,3 +1,8 @@
+/* ==UserScript==
+// @name           user-styles
+// @description    Consolidated UI styles (previously the dormant profile chrome/userChrome.css)
+// ==/UserScript==*/
+
 /* Hide URL bar + bookmarks bar when a real page is loaded.
    They remain visible on new tab / home / blank tabs. */
 #navigator-toolbox:has(#urlbar[pageproxystate="valid"]) #nav-bar,
@@ -41,10 +46,19 @@
     min-width: 100px !important;
 }
 
-/* Tighten spacing of extension buttons in the tab bar (optional) */
-#TabsToolbar .unified-extensions-item,
-#TabsToolbar toolbarbutton[id$="-browser-action"] {
-    padding: 0 2px !important;
+/* Tighten spacing of extension buttons in the tab bar.
+   NOTE: the real button class is "unified-extensions-item-action-button"
+   and IDs end in "-BAP" (e.g. ublock0_raymondhill_net-BAP).
+   New-tab buttons are excluded (they use a list-style-image + icon that
+   gets distorted by min/padding overrides). */
+#TabsToolbar .toolbarbutton-1:not(#tabs-newtab-button):not(#new-tab-button):not(#vertical-tabs-newtab-button),
+#TabsToolbar .unified-extensions-item-action-button {
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+}
+
+#TabsToolbar .toolbarbutton-1:not(#tabs-newtab-button):not(#new-tab-button):not(#vertical-tabs-newtab-button) > .toolbarbutton-icon {
+    padding-inline: 2px !important;
 }
 
 /* Hide the URL / nav-bar entirely */
