@@ -32,7 +32,18 @@ A minimal, compact Firefox setup that merges the tab bar and nav bar into a sing
 
 ## Installation
 
-### 1. Install fx-autoconfig
+### Quick install (Windows — share with friends)
+
+1. Download this repo (**Code → Download ZIP**) and extract it.
+2. Run `install\install-windows.bat` (double-click; accept the UAC prompt).
+3. Fully close Firefox and reopen it.
+
+The installer finds your Firefox + profile, installs fx-autoconfig automatically,
+and copies all the JS/CSS files. Nothing to configure manually.
+
+### Manual install
+
+#### 1. Install fx-autoconfig
 
 Follow the instructions at [MrOtherGuy/fx-autoconfig](https://github.com/MrOtherGuy/fx-autoconfig). In short:
 
@@ -45,6 +56,7 @@ Follow the instructions at [MrOtherGuy/fx-autoconfig](https://github.com/MrOther
 
 | File in this repo | Copy to |
 |---|---|
+| `install/config.js` | `<Firefox install dir>/config.js` *(overwrite)* |
 | `install/channel-prefs.js` | `<Firefox install dir>/defaults/pref/channel-prefs.js` *(overwrite)* |
 | `install/JS/tab-edit-url.uc.js` | `<Profile folder>/chrome/JS/tab-edit-url.uc.js` |
 | `install/JS/tab-reflow.uc.js` | `<Profile folder>/chrome/JS/tab-reflow.uc.js` |
@@ -89,6 +101,8 @@ Your Firefox version might have renamed some toolbar elements. Open an issue wit
 
 ## Files
 
+- `install/install-windows.bat` — One-click Windows installer (finds Firefox + profile, installs fx-autoconfig, copies everything).
+- `install/config.js` — fx-autoconfig autoconfig file (goes in the Firefox install dir).
 - `install/channel-prefs.js` — Firefox prefs that enable fx-autoconfig and legacy customization (`userChrome.css`, unsigned extensions, experiments).
 - `install/JS/tab-edit-url.uc.js` — Inline tab URL editor with history autocomplete (keeps typed text, hardened URL schemes).
 - `install/JS/tab-reflow.uc.js` — Tabs reflow instantly when one is closed.

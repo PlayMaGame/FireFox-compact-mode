@@ -1,27 +1,35 @@
 // ==UserScript==
 // @name           tab-reflow
-// @description    Tabs reflow immediately when one is closed by mouse, instead of waiting for the pointer to move away.
+// @description    Tabs reflow immediately when one is closed, instead of waiting for the pointer to move away.
 // ==/UserScript==
 
 (() => {
   function patch() {
-    try {
-      const tabContainer = gBrowser?.tabContainer;
-      if (!tabContainer || typeof tabContainer._lockTabSizing !== "function") {
-        return false;
-      }
-      // When a tab is closed by mouse while the pointer is over a tab,
-      // Firefox calls _lockTabSizing(), which sets an inline
-      // `max-width: … !important` on every tab to keep them frozen until the
-      // pointer moves (mousemove/mouseout). CSS cannot override inline
-      // !important styles, so we neutralize the method here: tabs reflow
-      // instantly on close, regardless of pointer position.
+    const tabContainer = gBrowser?.tabContainer;
+    if (!tabContainer) {
+      return;
+    }
+    // Prevent Firefox's tab-width lock (it sets an inline
+    // `max-width: … !important` on every tab while the pointer is over the tab
+    // bar). CSS cannot override inline !important styles, so neutralize the
+    // method that applies the lock.
+    if (typeof tabContainer._lockTabSizing === "function") {
       tabContainer._lockTabSizing = function () {
         // Intentionally empty.
       };
-      return true;
-    } catch (e) {
-      return false;
+    }
+    // Safety net for Firefox versions with different tab-close internals:
+    // right after a tab closes, clear any leftover inline max-width lock so
+    // the remaining tabs reflow immediately.
+    if (!tabContainer.__tabReflowCleanupInstalled) {
+      tabContainer.__tabReflowCleanupInstalled = true;
+      tabContainer.addEventListener("TabClose", () => {
+        for (const tab of tabContainer.allTabs) {
+          if (tab.style.maxWidth) {
+            tab.style.maxWidth = "";
+          }
+        }
+      });
     }
   }
 
