@@ -177,6 +177,12 @@
 		// Typing -> fetch suggestions
 		input.addEventListener("input", updateSuggestions);
 
+		// Center the text when it fits, left-align when it overflows.
+		function updateAlign() {
+			input.style.textAlign = input.scrollWidth > input.clientWidth ? "left" : "center";
+		}
+		input.addEventListener("input", updateAlign);
+
 		// Stop keyboard events from reaching the tab bar
 		const stopKey = e => e.stopPropagation();
 		input.addEventListener("keypress", stopKey);
@@ -229,6 +235,7 @@
 
         input.focus();
         input.select();
+        updateAlign();
     }
 
     // --- Double-click a tab to edit its URL ---

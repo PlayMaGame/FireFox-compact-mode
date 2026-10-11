@@ -87,7 +87,7 @@
     align-items: center;
     flex: 1;
     min-width: 0;
-    padding: 0 4px;
+    padding-inline: 8px;
 }
 
 .tab-url-editor-input {
@@ -99,6 +99,17 @@
     outline: none;
     font: inherit;
     padding: 0;
+    text-align: center;
+}
+
+/* Center tab titles; Firefox's own [textoverflow] handling switches long
+   titles to left-aligned with a fade. */
+.tab-label-container {
+    justify-content: center;
+}
+
+.tab-label {
+    text-align: center;
 }
 
 .tab-url-editor-input::placeholder {

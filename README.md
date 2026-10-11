@@ -23,7 +23,7 @@ A minimal, compact Firefox setup that merges the tab bar and nav bar into a sing
 - **Smart new tabs** — opening a new blank tab drops you straight into the inline URL editor, no address bar needed.
 - **Typed text stays on the tab** — type something in a blank tab's editor and switch away; the text is kept and shown on the tab instead of "New Tab".
 - **Tabs fill the bar** — tabs fill the whole tab bar and split the available width equally.
-- **Instant tab reflow** — closing a tab makes the rest expand immediately (no waiting for the mouse to move away).
+- **Smart tab close** — the leftmost/rightmost tabs fill the bar immediately when closed; middle tabs wait until the pointer leaves the tab bar.
 
 ## Requirements
 
@@ -105,7 +105,7 @@ Your Firefox version might have renamed some toolbar elements. Open an issue wit
 - `install/config.js` — fx-autoconfig autoconfig file (goes in the Firefox install dir).
 - `install/channel-prefs.js` — Firefox prefs that enable fx-autoconfig and legacy customization (`userChrome.css`, unsigned extensions, experiments).
 - `install/JS/tab-edit-url.uc.js` — Inline tab URL editor with history autocomplete (keeps typed text, hardened URL schemes).
-- `install/JS/tab-reflow.uc.js` — Tabs reflow instantly when one is closed.
+- `install/JS/tab-reflow.uc.js` — Leftmost tab fills immediately on close (like the rightmost); middle tabs wait for the pointer.
 - `install/JS/extensions-to-tabbar.uc.js` — Rearranges app menu, back button, extensions, and window controls into the tab bar.
 - `install/CSS/tab-fill.uc.css` — Tabs fill the whole tab bar and split width equally.
 - `install/CSS/user-styles.uc.css` — Consolidated UI styles (hidden URL bar, tighter toolbar, editor styling).
