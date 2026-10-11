@@ -24,6 +24,7 @@ A minimal, compact Firefox setup that merges the tab bar and nav bar into a sing
 - **Typed text stays on the tab** — type something in a blank tab's editor and switch away; the text is kept and shown on the tab instead of "New Tab".
 - **Tabs fill the bar** — tabs fill the whole tab bar and split the available width equally.
 - **Smart tab close** — the leftmost/rightmost tabs fill the bar immediately when closed; middle tabs wait until the pointer leaves the tab bar.
+- **Smart bookmarks bar** — shows on startup / new tab / tab close; hides when you click in the page or select a bookmark (folder opens keep it visible).
 
 ## Requirements
 
@@ -60,6 +61,7 @@ Follow the instructions at [MrOtherGuy/fx-autoconfig](https://github.com/MrOther
 | `install/channel-prefs.js` | `<Firefox install dir>/defaults/pref/channel-prefs.js` *(overwrite)* |
 | `install/JS/tab-edit-url.uc.js` | `<Profile folder>/chrome/JS/tab-edit-url.uc.js` |
 | `install/JS/tab-reflow.uc.js` | `<Profile folder>/chrome/JS/tab-reflow.uc.js` |
+| `install/JS/smart-bookmarks-bar.uc.js` | `<Profile folder>/chrome/JS/smart-bookmarks-bar.uc.js` |
 | `install/JS/extensions-to-tabbar.uc.js` | `<Profile folder>/chrome/JS/extensions-to-tabbar.uc.js` |
 | `install/CSS/tab-fill.uc.css` | `<Profile folder>/chrome/CSS/tab-fill.uc.css` |
 | `install/CSS/user-styles.uc.css` | `<Profile folder>/chrome/CSS/user-styles.uc.css` |
@@ -106,6 +108,7 @@ Your Firefox version might have renamed some toolbar elements. Open an issue wit
 - `install/channel-prefs.js` — Firefox prefs that enable fx-autoconfig and legacy customization (`userChrome.css`, unsigned extensions, experiments).
 - `install/JS/tab-edit-url.uc.js` — Inline tab URL editor with history autocomplete (keeps typed text, hardened URL schemes).
 - `install/JS/tab-reflow.uc.js` — Leftmost tab fills immediately on close (like the rightmost); middle tabs wait for the pointer.
+- `install/JS/smart-bookmarks-bar.uc.js` — Bookmarks bar shows on startup/new-tab/tab-close; hides on page/bookmark clicks (folder opens keep it).
 - `install/JS/extensions-to-tabbar.uc.js` — Rearranges app menu, back button, extensions, and window controls into the tab bar.
 - `install/CSS/tab-fill.uc.css` — Tabs fill the whole tab bar and split width equally.
 - `install/CSS/user-styles.uc.css` — Consolidated UI styles (hidden URL bar, tighter toolbar, editor styling).
