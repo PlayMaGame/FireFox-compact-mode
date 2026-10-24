@@ -12,6 +12,34 @@
     // switching tabs and can be shown on the tab label instead of "New Tab".
     const pendingLabels = new WeakMap();
 
+    // Search-result URLs carry what the user typed in a query parameter.
+    // Recognise the common engines so the editor can show that text instead
+    // of the long encoded URL.
+    const SEARCH_HOSTS = [
+        /(^|\.)google\.[a-z.]{2,}$/i,
+        /(^|\.)bing\.com$/i,
+        /(^|\.)duckduckgo\.com$/i,
+        /(^|\.)search\.brave\.com$/i,
+        /(^|\.)startpage\.com$/i,
+        /(^|\.)ecosia\.org$/i,
+        /(^|\.)search\.yahoo\.com$/i,
+        /(^|\.)yandex\.[a-z.]{2,}$/i,
+        /(^|\.)mojeek\.com$/i
+    ];
+
+    // Returns the searched text for a search-results URL, or null.
+    // URLSearchParams already turns %20 and "+" back into spaces.
+    function searchQueryFromURL(url) {
+        if (!url) return null;
+        let u;
+        try { u = new URL(url); } catch (_) { return null; }
+        if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+        if (!SEARCH_HOSTS.some(re => re.test(u.hostname))) return null;
+        const q = u.searchParams.get("q") || u.searchParams.get("p") ||
+                  u.searchParams.get("query") || u.searchParams.get("text") || "";
+        return q.trim() || null;
+    }
+
     async function getSuggestions(query, limit = 10) {
         if (!query) return [];
         try {
@@ -54,7 +82,9 @@
         const input = document.createElement("input");
         input.type = "text";
         input.className = "tab-url-editor-input";
-        input.value = isBlank ? (pendingLabels.get(tab) || "") : url;
+        input.value = isBlank
+            ? (pendingLabels.get(tab) || "")
+            : (searchQueryFromURL(url) || url);
         input.placeholder = "input URL here";
         wrap.append(input);
 
