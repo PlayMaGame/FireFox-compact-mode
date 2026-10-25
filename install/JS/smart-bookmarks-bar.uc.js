@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name           smart-bookmarks-bar
 // @description    Bookmarks bar shows on startup / new tab / tab close; hides on any click in the page or on a bookmark.
+// @version        1.1.0
 // ==/UserScript==
 
 (() => {

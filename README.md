@@ -2,6 +2,8 @@
 
 A minimal, compact Firefox setup that merges the tab bar and nav bar into a single row, with inline URL editing on tabs.
 
+**Version 1.1.0** · [Changelog](CHANGELOG.md)
+
 ## Demo Screenshots
 
 ### Startup View
@@ -19,7 +21,7 @@ A minimal, compact Firefox setup that merges the tab bar and nav bar into a sing
 ## Features
 
 - **Single-row layout** — app menu and back button on the left, tabs in the middle, extensions and window controls on the right. No separate nav bar taking up vertical space.
-- **Inline URL editing** - double-click any tab to edit its URL in place, with live autocomplete from your browsing history.
+- **Inline URL editing** - double-click any tab to edit its URL in place, with live autocomplete from your browsing history. Double-clicking the same tab again keeps editing; only a click outside the tab closes it.
 - **Search tabs reopen as the search** - double-click a Google/Bing/DuckDuckGo/... results tab and the editor shows what you searched (`rf online next`) instead of the long encoded URL.
 - **Smart new tabs** — opening a new blank tab drops you straight into the inline URL editor, no address bar needed.
 - **Typed text stays on the tab** — type something in a blank tab's editor and switch away; the text is kept and shown on the tab instead of "New Tab".

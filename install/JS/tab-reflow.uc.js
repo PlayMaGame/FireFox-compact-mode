@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name           tab-reflow
 // @description    The leftmost tab fills the bar immediately on close, like the rightmost tab.
+// @version        1.1.0
 // ==/UserScript==
 
 (() => {

@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name           tabbar-layout
 // @description    App menu + back/reload on left; downloads + extensions + window controls on right
+// @version        1.1.0
 // ==/UserScript==
 
 (function() {

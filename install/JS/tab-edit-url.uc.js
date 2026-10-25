@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name           tab-edit-url
 // @description    Double-click a tab to edit its URL inline, with history autocomplete
+// @version        1.1.0
 // ==/UserScript==
 
 (function() {
@@ -152,8 +153,17 @@
             // Ignore clicks inside an open context menu so its commands
             // (Copy, Paste, Select All) can run without closing the editor first.
             if (e.target.closest && e.target.closest("menupopup")) return;
-            // Click outside both the editor wrap and the panel -> close
-            if (!wrap.contains(e.target) && !panel.contains(e.target)) close();
+            // Clicks anywhere on this tab (padding, icon, the tab body) keep
+            // the editor open - only a click outside the tab closes it.
+            if (tab.contains(e.target)) {
+                if (!wrap.contains(e.target) && !panel.contains(e.target)) {
+                    e.preventDefault();
+                    input.focus();
+                }
+                return;
+            }
+            // Click outside the tab and its panel -> close
+            if (!panel.contains(e.target)) close();
         };
 
         function close() {
@@ -247,12 +257,32 @@
 		});
 
         input.addEventListener("blur", e => {
+            // The editor may already be gone (closed by a click elsewhere).
+            if (!wrap.isConnected) return;
             if (panel.contains(e.relatedTarget)) return;
             // Keep the editor open while a context menu is active
             if (document.querySelector("menupopup[open]")) return;
+            // A click on the same tab (its padding, icon or the tab element
+            // itself) moves focus out of the input but must not end editing.
+            if (tab.contains(document.activeElement)) {
+                setTimeout(() => {
+                    if (wrap.isConnected) {
+                        input.focus();
+                        input.select();
+                    }
+                }, 0);
+                return;
+            }
             setTimeout(close, 120);
         });
-        wrap.addEventListener("mousedown", e => e.stopPropagation());
+        wrap.addEventListener("mousedown", e => {
+            e.stopPropagation();
+            // Clicking the padding around the input is still "inside the tab".
+            if (e.target === wrap) {
+                e.preventDefault();
+                input.focus();
+            }
+        });
         wrap.addEventListener("click",     e => e.stopPropagation());
         wrap.addEventListener("dblclick",  e => e.stopPropagation());
 
@@ -274,6 +304,15 @@
         if (!tab || tab !== gBrowser.selectedTab) return;
         e.stopPropagation();
         e.preventDefault();
+        // Double-clicking a tab that is already being edited keeps the editor
+        // open and puts the cursor back in it; only a click outside the tab
+        // closes it.
+        const openInput = tab.querySelector(".tab-url-editor-input");
+        if (openInput) {
+            openInput.focus();
+            openInput.select();
+            return;
+        }
         openEditor(tab);
     });
 

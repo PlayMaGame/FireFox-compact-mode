@@ -1,6 +1,7 @@
 /* ==UserScript==
 // @name           tab-fill
 // @description    Make tabs fill the entire tab bar and split the available width equally
+// @version        1.1.0
 // ==/UserScript==*/
 
 /* Each unpinned horizontal tab takes an equal share of the tab bar and can

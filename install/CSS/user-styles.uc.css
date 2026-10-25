@@ -1,6 +1,7 @@
 /* ==UserScript==
 // @name           user-styles
 // @description    Consolidated UI styles (previously the dormant profile chrome/userChrome.css)
+// @version        1.1.0
 // ==/UserScript==*/
 
 /* Bookmarks bar: visible by default; only hidden when JS sets data-bmbar="hidden". */
